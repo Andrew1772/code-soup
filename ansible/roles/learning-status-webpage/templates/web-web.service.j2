@@ -1,0 +1,13 @@
+[Unit]
+Description= Webpage Service
+After=network.target
+
+[Service]
+WorkingDirectory=/vagrant
+ExecStart=/usr/bin/python3 /vagrant/web.py
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

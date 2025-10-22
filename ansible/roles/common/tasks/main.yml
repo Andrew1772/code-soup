@@ -1,0 +1,22 @@
+---
+- name: Ensure curl and tar are installed
+  ansible.builtin.dnf:
+    name:
+      - curl
+      - tar
+    state: present
+
+- name: Download and install uv
+  ansible.builtin.shell: |
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+  args:
+    creates: /usr/local/bin/uv
+  environment:
+    UV_INSTALL_DIR: /usr/local/bin
+  register: uv_install
+  changed_when: "'Installing' in uv_install.stdout or 'Updating' in uv_install.stdout"
+
+- name: run uv sync
+  ansible.builtin.command: "/usr/local/bin/uv sync --active --frozen"
+  args:
+    chdir: /vagrant/
