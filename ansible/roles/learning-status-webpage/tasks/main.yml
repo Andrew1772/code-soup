@@ -1,0 +1,7 @@
+---
+- name: Copy service file
+  do stuff
+
+
+- name: enable and start service file
+  do more stuff
