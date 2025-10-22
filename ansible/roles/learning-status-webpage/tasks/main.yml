@@ -1,7 +1,22 @@
 ---
-- name: Copy service file
-  do stuff
+- name: Copy web service template
+  template:
+    src: web-web.service.j2
+    dest: /etc/systemd/system/web-web.service
+    owner: root
+    group: root
+    mode: '0644'
 
+- name: Reload systemd to recognize new service
+  systemd:
+    daemon_reload: yes
 
-- name: enable and start service file
-  do more stuff
+- name: Enable service to start on boot
+  systemd:
+    name: web-web.service
+    enabled: yes
+
+- name: Start the service
+  systemd:
+    name: web-web.service
+    state: started
