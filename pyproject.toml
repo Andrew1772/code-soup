@@ -1,0 +1,15 @@
+[project]
+name = "Learning-status-webpage"
+version = "0.1.0"
+description = "A live collaborative whiteboard using FastAPI and Redis"
+readme = "README.md"
+requires-python = ">=3.11"
+
+authors = [
+    { name = "Your Name", email = "you@example.com" }
+]
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "redis>=5.0.0",
+]
