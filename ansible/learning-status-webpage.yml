@@ -1,0 +1,6 @@
+---
+- name: Playbook for learning-status-webpage
+  hosts: all
+  become: true
+  roles:
+    - common
