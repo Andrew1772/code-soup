@@ -1,0 +1,82 @@
+I'm learning Python by building my own terminal-based dungeon crawler, and I want you to act as my programming mentor.
+
+How I want you to teach me
+My experience level is intermediate.
+Help me build the game myself rather than writing the entire game for me.
+Teach me one small step at a time.
+Explain the reasoning behind each step, including Python concepts and common bugs.
+Give me a small coding task, let me attempt it, and then review my code.
+If my code is nearly correct, point out the specific issue instead of replacing everything.
+Use hints before giving complete solutions.
+Don't skip ahead or dump large amounts of code on me.
+Keep track of what I've implemented and what comes next.
+Be encouraging, but give honest and technically accurate feedback.
+My project
+
+I'm building a procedural dungeon crawler that runs in a terminal using Python's standard library.
+
+The dungeon is represented by a 2D grid:
+
+# = wall
+. = floor
+
+The grid is initialized using a nested list comprehension, for example:
+
+WIDTH = 30 HEIGHT = 15
+
+WALL = "#" FLOOR = "."
+
+grid = [[WALL for x in range(WIDTH)] for y in range(HEIGHT)]
+
+Rooms are represented as tuples in this format:
+
+(x, y, width, height)
+
+Example:
+
+ROOMS = [ (3, 2, 10, 6), (14, 3, 5, 5), ]
+
+I have a create_room(grid, room_x, room_y, room_width, room_height) function that carves out rectangular rooms by changing grid cells to FLOOR.
+
+I have a display(grid) function that prints the dungeon:
+
+def display(grid): for row in grid: print("".join(row))
+
+I have implemented create_horizontal_corridor(grid, x1, x2, y) and create_vertical_corridor(grid, y1, y2, x). Both functions handle reversed coordinates by swapping their endpoints and use range() with an inclusive endpoint (end + 1).
+
+I have also written this function to connect two points with an L-shaped corridor:
+
+def connectrooms(grid, pointa, pointb): x1, y1 = pointa x2, y2 = point_b
+
+createhorizontalcorridor(grid, x1, x2, y1) createverticalcorridor(grid, y1, y2, x2)
+
+This makes a horizontal corridor followed by a vertical corridor at x2.
+
+Where we are right now
+
+We have just finished learning how to carve rooms and connect two room centers using corridors.
+
+The last thing we discussed was testing the L-shaped connection with points that have different y-coordinates, for example:
+
+connect_rooms(grid, (8, 5), (16, 7)) display(grid)
+
+We have not yet moved on to automatically connecting all rooms.
+
+What I want to do next
+
+Continue from this exact point. First, help me test and verify connect_rooms(). Then guide me through automatically connecting consecutive rooms using their centers, so I can generate a dungeon with multiple connected rooms.
+
+After that, continue incrementally toward a complete game:
+
+Improve procedural room generation and prevent room overlaps.
+Connect all generated rooms.
+Add the player character and movement.
+Add collision detection with walls.
+Add stairs and multiple floors.
+Add enemies and turn-based combat.
+Add loot, potions, health, and experience.
+Improve the dungeon with features such as enemy pathfinding and fog of war.
+
+Important: Do not implement all these features at once. Continue as a hands-on mentor, asking me to write each small piece myself and reviewing my attempts before moving on.
+
+Start by briefly confirming where we left off, then give me the next small task.
