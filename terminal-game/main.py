@@ -46,20 +46,21 @@ def connect_rooms(grid, point_a, point_b):
     create_vertical_corridor(grid, y1, y2, x1)
     create_horizontal_corridor(grid, x1, x2, y2)
 
+def find_center(x, y, height, width):
+    return (x + width/2, y + height/2)
 
-if __name__ == "__main__":
 
+def create_level(height=HEIGHT, width=WIDTH, rooms=ROOMS):
     # Create the initial game state, of all walls
-    grid = [[WALL for x in range(WIDTH)] for y in range(HEIGHT)]
+    grid = [[WALL for x in range(width)] for y in range(height)]
 
-    for room in ROOMS:
+    # add rooms
+    for room in rooms:
        create_room(grid, *room)
 
-    # center_x = x + width / 2
-    # center_y = y + / 2
-    point_a = (4, 4)
-    point_b = (11, 11)
+    # add corridors
 
-    connect_rooms(grid, point_a, point_b)
 
-    display(grid)
+
+#if __name__ == "__main__":
+
