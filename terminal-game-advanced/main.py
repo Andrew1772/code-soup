@@ -1,4 +1,5 @@
 from blessed import Terminal
+import time
 
 term = Terminal()
 
@@ -30,19 +31,38 @@ def create_dungeon(player_x, player_y):
     return dungeon
 
 def move_player(dungeon, player_x, player_y, key):
+    if key == 'w':
+        dungeon[player_y][player_x] = FLOOR
+        dungeon[player_y - 1][player_x] = PLAYER 
+        return player_x, player_y - 1
+    if key == 's':
+        dungeon[player_y][player_x] = FLOOR
+        dungeon[player_y + 1][player_x] = PLAYER 
+        return player_x, player_y + 1
+    if key == 'd':
+        dungeon[player_y][player_x] = FLOOR
+        dungeon[player_y][player_x + 1] = PLAYER 
+        return player_x + 1, player_y
+    if key == 'a':
+        dungeon[player_y][player_x] = FLOOR
+        dungeon[player_y][player_x - 1] = PLAYER 
+        return player_x - 1, player_y
+
 
 
 def run_game(dungeon, player_x, player_y):
     with term.cbreak(), term.hidden_cursor():
-        key = term.inkey()
-        print(key)
-
+        
         while True:
+            time.sleep(.1)
+            key = term.inkey()
             display(dungeon)
             if key == 'q':
                 break
-            else: 
-                move_player(dungeon, player_x, player_y, key)
+
+            player_x, player_y = move_player(dungeon, player_x, player_y, key)
+
+
 
 
 
