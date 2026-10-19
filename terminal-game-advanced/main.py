@@ -6,6 +6,7 @@ term = Terminal()
 
 WALL = term.white("#")
 FLOOR = term.gray(".")
+# PLAYER = term.green("\U0001f47e") this is the purple dude, he's 2 spaces big
 PLAYER = term.green("@")
 DOOR = term.cyan("%")
 SPIKE = term.red("^")
