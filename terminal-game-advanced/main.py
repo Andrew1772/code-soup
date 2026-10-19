@@ -96,21 +96,21 @@ def move_goblins(dungeon, goblins):
             if dungeon[goblin_y][goblin_x + 1] == SPIKE or dungeon[goblin_y][goblin_x + 1] == WALL or dungeon[goblin_y][goblin_x + 1] == DOOR:
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x - 1] = GOBLIN
-                goblins[i] = (goblin_x - 1, goblin_y)
+                goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
             else: 
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x + 1] = GOBLIN
-                goblins[i] = (goblin_x + 1, goblin_y, "LEFT")
+                goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
 
         if direction == "LEFT":
             if dungeon[goblin_y][goblin_x - 1] == SPIKE or dungeon[goblin_y][goblin_x - 1] == WALL or dungeon[goblin_y][goblin_x - 1] == DOOR:
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x + 1] = GOBLIN
-                goblins[i] = (goblin_x + 1, goblin_y)
+                goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
             else: 
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x - 1] = GOBLIN
-                goblins[i] = (goblin_x - 1, goblin_y, "RIGHT")
+                goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
     return dungeon, goblins
 
 
