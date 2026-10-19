@@ -10,7 +10,7 @@ PLAYER = term.green("@")
 DOOR = term.cyan("%")
 SPIKE = term.red("^")
 GOBLIN = term.red("G")
-LEVEL_NUM = 4
+LEVEL_NUM = 0
 
 
 def display(dungeon):
@@ -151,10 +151,11 @@ def finish_level():
 
     if LEVEL_NUM < 5:
         new_dungeon, player_coordinates = create_dungeon_easy()
-    elif LEVEL_NUM < 15 and LEVEL_NUM >= 5:
+        run_game(new_dungeon, player_coordinates)
+    elif LEVEL_NUM >= 5:# and LEVEL_NUM < 15:
         new_dungeon, player_coordinates, goblins = create_dungeon_medium()
+        run_game(new_dungeon, player_coordinates, goblins)
 
-    run_game(new_dungeon, player_coordinates, goblins)
 
 def game_over():
     print(LEVEL_NUM)
