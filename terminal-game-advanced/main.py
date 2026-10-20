@@ -11,7 +11,7 @@ PLAYER = term.green("@")
 DOOR = term.cyan("%")
 SPIKE = term.red("^")
 GOBLIN = term.red("G")
-LEVEL_NUM = 14
+LEVEL_NUM = 20
 
 
 def display(dungeon):
@@ -209,7 +209,8 @@ def run_game(dungeon, player_coordinates, goblins = {}):
             key = term.inkey()
 
             if key == 'q':
-                sys.exit()
+                game_over()
+
             player_coordinates = move_player(dungeon, player_coordinates, key, goblins)
             display(dungeon)
 
