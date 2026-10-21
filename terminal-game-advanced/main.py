@@ -11,7 +11,7 @@ PLAYER = term.green("@")
 DOOR = term.cyan("%")
 SPIKE = term.red("^")
 GOBLIN = term.red("G")
-LEVEL_NUM = 20
+LEVEL_NUM = 10
 
 
 def display(dungeon):
@@ -78,8 +78,8 @@ def create_dungeon_medium():
     return dungeon, (player_x, player_y), goblins
 
 def create_dungeon_hard():
-    width = 60
-    height = 25
+    width = 35
+    height = 15
     global LEVEL_NUM
     goblins = {}
 
@@ -132,17 +132,26 @@ def move_goblins(dungeon, goblins):
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x - 1] = GOBLIN
                 goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
-            else: 
+            elif dungeon[goblin_y][goblin_x - 1] == SPIKE or dungeon[goblin_y][goblin_x - 1] == WALL or dungeon[goblin_y][goblin_x - 1] == DOOR or dungeon[goblin_y][goblin_x - 1] == GOBLIN:
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x + 1] = GOBLIN
                 goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
+            else:
+                dungeon[goblin_y][goblin_x] = FLOOR
+                dungeon[goblin_y][goblin_x + 1] = GOBLIN
+                goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
+
 
         if direction == "LEFT":
             if dungeon[goblin_y][goblin_x - 1] == SPIKE or dungeon[goblin_y][goblin_x - 1] == WALL or dungeon[goblin_y][goblin_x - 1] == DOOR or dungeon[goblin_y][goblin_x - 1] == GOBLIN:
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x + 1] = GOBLIN
                 goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
-            else: 
+            elif dungeon[goblin_y][goblin_x + 1] == SPIKE or dungeon[goblin_y][goblin_x + 1] == WALL or dungeon[goblin_y][goblin_x + 1] == DOOR or dungeon[goblin_y][goblin_x + 1] == GOBLIN:
+                dungeon[goblin_y][goblin_x] = FLOOR
+                dungeon[goblin_y][goblin_x - 1] = GOBLIN
+                goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
+            else:
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x - 1] = GOBLIN
                 goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
