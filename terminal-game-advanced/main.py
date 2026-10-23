@@ -1,17 +1,20 @@
 from blessed import Terminal
 import random
 import sys
+import math
 
 term = Terminal()
 
 WALL = term.white("#")
 FLOOR = term.gray(".")
 # PLAYER = term.green("\U0001f47e") this is the purple dude, he's 2 spaces big
-PLAYER = term.green("@")
+PLAYER = term.gold("@")
 DOOR = term.cyan("%")
 SPIKE = term.red("^")
 GOBLIN = term.red("G")
-LEVEL_NUM = 10
+BOSS = term.green("B")
+LEVEL_NUM = 14
+SWORD_HP = 3
 
 
 def display(dungeon):
@@ -82,6 +85,7 @@ def create_dungeon_hard():
     height = 15
     global LEVEL_NUM
     goblins = {}
+    bosses = {}
 
     dungeon = [["" for x in range(width)] for y in range(height)]
 
@@ -105,22 +109,48 @@ def create_dungeon_hard():
         dungeon[goblin_y][goblin_x] = GOBLIN
         goblins.update({i: (goblin_x, goblin_y, "RIGHT")})
 
+    for i in range(0, LEVEL_NUM):
+        boss_x = random.randint(1, width - 2)
+        boss_y = random.randint(1, height - 2)
+
+        dungeon[boss_y][boss_x] = BOSS
+        bosses.update({i: (boss_x, boss_y)})
+
     dungeon[random.randint(1, height - 2)][random.randint(1, width - 2)] = DOOR
     dungeon[player_y][player_x] = PLAYER
 
-    return dungeon, (player_x, player_y), goblins
+    return dungeon, (player_x, player_y), goblins, bosses
 
 def check_tile(dungeon, player_x, player_y):
     if dungeon[player_y][player_x] == WALL:
         return False
 
-    if dungeon[player_y][player_x] == SPIKE or dungeon[player_y][player_x] == GOBLIN:
+    if dungeon[player_y][player_x] == SPIKE:
+        game_over()
+
+    if dungeon[player_y][player_x] == GOBLIN:
+        # combat(dungeon, player_x, player_y)
         game_over()
 
     if dungeon[player_y][player_x] == DOOR:
         finish_level()
 
     return True
+
+def check_tile_boss(dungeon, boss_x, boss_y):
+    if dungeon[boss_y][boss_x] != FLOOR:
+        return False
+    return True
+
+# TODO: need to remove the goblin when the player hits it with hp left on the sword
+#def combat(dungeon, player_x, player_y):
+#    global SWORD_HP
+#    if SWORD_HP > 0:
+#        SWORD_HP =- 1
+#        return True
+#    else:
+#        game_over()
+
 
 # this moves the goblins right or left and change when they hit something
 def move_goblins(dungeon, goblins):
@@ -157,11 +187,48 @@ def move_goblins(dungeon, goblins):
                 goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
     return dungeon, goblins
 
+# bosses will attempt to catch the player
+def move_bosses(dungeon, player_coordinates, bosses):
+    player_x, player_y = player_coordinates
 
-def move_player(dungeon, player_coordinates, key, goblins):
+    for i in range(len(bosses)):
+        boss_x, boss_y = bosses[i]
+        dx = player_x - boss_x
+        dy = player_y - boss_y
+
+        if dx > 0:
+            if check_tile_boss(dungeon, boss_x + 1, boss_y):
+                dungeon[boss_y][boss_x] = FLOOR
+                dungeon[boss_y][boss_x + 1] = BOSS
+                bosses[i] = (boss_x + 1, boss_y)
+        elif dx < 0:
+            if check_tile_boss(dungeon, boss_x - 1, boss_y):
+                dungeon[boss_y][boss_x] = FLOOR
+                dungeon[boss_y][boss_x - 1] = BOSS
+                bosses[i] = (boss_x - 1, boss_y)
+        elif dy > 0:
+            if check_tile_boss(dungeon, boss_x, boss_y + 1):
+                dungeon[boss_y][boss_x] = FLOOR
+                dungeon[boss_y + 1][boss_x] = BOSS
+                bosses[i] = (boss_x, boss_y + 1)
+        elif dy < 0:
+            if check_tile_boss(dungeon, boss_x, boss_y - 1):
+                dungeon[boss_y][boss_x] = FLOOR
+                dungeon[boss_y - 1][boss_x] = BOSS
+                bosses[i] = (boss_x, boss_y - 1)
+
+        return dungeon, bosses
+
+
+
+    return dungeon, bosses
+def move_player(dungeon, player_coordinates, key, goblins, bosses):
     player_x, player_y = player_coordinates
     if goblins:
         dungeon, goblins = move_goblins(dungeon, goblins)
+
+    if bosses:
+        dungeon, bosses = move_bosses(dungeon, player_coordinates, bosses)
 
     if key == 'w':
         if check_tile(dungeon, player_x, player_y - 1):
@@ -200,8 +267,8 @@ def finish_level():
         new_dungeon, player_coordinates, goblins = create_dungeon_medium()
         run_game(new_dungeon, player_coordinates, goblins)
     elif LEVEL_NUM >= 15:
-        new_dungeon, player_coordinates, goblins = create_dungeon_hard()
-        run_game(new_dungeon, player_coordinates, goblins)
+        new_dungeon, player_coordinates, goblins, bosses = create_dungeon_hard()
+        run_game(new_dungeon, player_coordinates, goblins, bosses)
 
 
 
@@ -210,7 +277,7 @@ def game_over():
     sys.exit()
 
 
-def run_game(dungeon, player_coordinates, goblins = {}):
+def run_game(dungeon, player_coordinates, goblins = {}, bosses = {}):
     with term.cbreak(), term.hidden_cursor():
         display(dungeon)
 
@@ -220,7 +287,7 @@ def run_game(dungeon, player_coordinates, goblins = {}):
             if key == 'q':
                 game_over()
 
-            player_coordinates = move_player(dungeon, player_coordinates, key, goblins)
+            player_coordinates = move_player(dungeon, player_coordinates, key, goblins, bosses)
             display(dungeon)
 
 
