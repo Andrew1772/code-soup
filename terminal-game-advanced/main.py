@@ -102,14 +102,14 @@ def create_dungeon_hard():
     for i in range(0, int(LEVEL_NUM * 5)):
         dungeon[random.randint(1, height - 2)][random.randint(1, width - 2)] = SPIKE
 
-    for i in range(0, LEVEL_NUM * 2):
-        goblin_x = random.randint(1, width - 2)
-        goblin_y = random.randint(1, height - 2)
+    #for i in range(0, LEVEL_NUM * 2):
+    #    goblin_x = random.randint(1, width - 2)
+    #    goblin_y = random.randint(1, height - 2)
 
-        dungeon[goblin_y][goblin_x] = GOBLIN
-        goblins.update({i: (goblin_x, goblin_y, "RIGHT")})
+    #    dungeon[goblin_y][goblin_x] = GOBLIN
+    #    goblins.update({i: (goblin_x, goblin_y, "RIGHT")})
 
-    for i in range(0, LEVEL_NUM):
+    for i in range(0, int(LEVEL_NUM / 4)):
         boss_x = random.randint(1, width - 2)
         boss_y = random.randint(1, height - 2)
 
@@ -132,6 +132,9 @@ def check_tile(dungeon, player_x, player_y):
         # combat(dungeon, player_x, player_y)
         game_over()
 
+    if dungeon[player_y][player_x] == BOSS:
+        game_over()
+
     if dungeon[player_y][player_x] == DOOR:
         finish_level()
 
@@ -151,6 +154,20 @@ def check_tile_boss(dungeon, boss_x, boss_y):
 #    else:
 #        game_over()
 
+def check_tile_goblin(dungeon, goblin_x, goblin_y):
+    if dungeon[goblin_y][goblin_x] == SPIKE:
+        return False
+    if dungeon[goblin_y][goblin_x] == WALL: 
+        return False
+    if dungeon[goblin_y][goblin_x] == DOOR:
+        return False
+    if dungeon[goblin_y][goblin_x] == GOBLIN:
+        return False
+    if dungeon[goblin_y][goblin_x] == BOSS:
+        return False
+    
+    return True
+
 
 # this moves the goblins right or left and change when they hit something
 def move_goblins(dungeon, goblins):
@@ -158,33 +175,26 @@ def move_goblins(dungeon, goblins):
     for i in range(len(goblins)):
         goblin_x, goblin_y, direction = goblins[i]
         if direction == "RIGHT":
-            if dungeon[goblin_y][goblin_x + 1] == SPIKE or dungeon[goblin_y][goblin_x + 1] == WALL or dungeon[goblin_y][goblin_x + 1] == DOOR or dungeon[goblin_y][goblin_x + 1] == GOBLIN:
+            if check_tile_goblin(dungeon, goblin_x + 1, goblin_y):
+                dungeon[goblin_y][goblin_x] = FLOOR
+                dungeon[goblin_y][goblin_x + 1] = GOBLIN
+                goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
+            elif check_tile_goblin(dungeon, goblin_x - 1, goblin_y):
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x - 1] = GOBLIN
                 goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
-            elif dungeon[goblin_y][goblin_x - 1] == SPIKE or dungeon[goblin_y][goblin_x - 1] == WALL or dungeon[goblin_y][goblin_x - 1] == DOOR or dungeon[goblin_y][goblin_x - 1] == GOBLIN:
-                dungeon[goblin_y][goblin_x] = FLOOR
-                dungeon[goblin_y][goblin_x + 1] = GOBLIN
-                goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
-            else:
-                dungeon[goblin_y][goblin_x] = FLOOR
-                dungeon[goblin_y][goblin_x + 1] = GOBLIN
-                goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
 
 
         if direction == "LEFT":
-            if dungeon[goblin_y][goblin_x - 1] == SPIKE or dungeon[goblin_y][goblin_x - 1] == WALL or dungeon[goblin_y][goblin_x - 1] == DOOR or dungeon[goblin_y][goblin_x - 1] == GOBLIN:
+            if check_tile_goblin(dungeon, goblin_x - 1, goblin_y):
+                dungeon[goblin_y][goblin_x] = FLOOR
+                dungeon[goblin_y][goblin_x - 1] = GOBLIN
+                goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
+            elif check_tile_goblin(dungeon, goblin_x + 1, goblin_y):
                 dungeon[goblin_y][goblin_x] = FLOOR
                 dungeon[goblin_y][goblin_x + 1] = GOBLIN
                 goblins[i] = (goblin_x + 1, goblin_y, "RIGHT")
-            elif dungeon[goblin_y][goblin_x + 1] == SPIKE or dungeon[goblin_y][goblin_x + 1] == WALL or dungeon[goblin_y][goblin_x + 1] == DOOR or dungeon[goblin_y][goblin_x + 1] == GOBLIN:
-                dungeon[goblin_y][goblin_x] = FLOOR
-                dungeon[goblin_y][goblin_x - 1] = GOBLIN
-                goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
-            else:
-                dungeon[goblin_y][goblin_x] = FLOOR
-                dungeon[goblin_y][goblin_x - 1] = GOBLIN
-                goblins[i] = (goblin_x - 1, goblin_y, "LEFT")
+
     return dungeon, goblins
 
 # bosses will attempt to catch the player
@@ -201,23 +211,26 @@ def move_bosses(dungeon, player_coordinates, bosses):
                 dungeon[boss_y][boss_x] = FLOOR
                 dungeon[boss_y][boss_x + 1] = BOSS
                 bosses[i] = (boss_x + 1, boss_y)
-        elif dx < 0:
+                continue
+        if dx < 0:
             if check_tile_boss(dungeon, boss_x - 1, boss_y):
                 dungeon[boss_y][boss_x] = FLOOR
                 dungeon[boss_y][boss_x - 1] = BOSS
                 bosses[i] = (boss_x - 1, boss_y)
-        elif dy > 0:
+                continue
+        if dy > 0:
             if check_tile_boss(dungeon, boss_x, boss_y + 1):
                 dungeon[boss_y][boss_x] = FLOOR
                 dungeon[boss_y + 1][boss_x] = BOSS
                 bosses[i] = (boss_x, boss_y + 1)
-        elif dy < 0:
+                continue
+        if dy < 0:
             if check_tile_boss(dungeon, boss_x, boss_y - 1):
                 dungeon[boss_y][boss_x] = FLOOR
                 dungeon[boss_y - 1][boss_x] = BOSS
                 bosses[i] = (boss_x, boss_y - 1)
 
-        return dungeon, bosses
+    return dungeon, bosses
 
 
 
