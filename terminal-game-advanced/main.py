@@ -2,6 +2,7 @@ from blessed import Terminal
 import random
 import sys
 import math
+import argparse
 
 term = Terminal()
 
@@ -13,7 +14,7 @@ DOOR = term.cyan("%")
 SPIKE = term.red("^")
 GOBLIN = term.red("G")
 BOSS = term.green("B")
-LEVEL_NUM = 14
+LEVEL_NUM = 0
 SWORD_HP = 3
 
 
@@ -303,9 +304,26 @@ def run_game(dungeon, player_coordinates, goblins = {}, bosses = {}):
             player_coordinates = move_player(dungeon, player_coordinates, key, goblins, bosses)
             display(dungeon)
 
+if __name__ == "__main__":
 
-dungeon, player_coordinates = create_dungeon_easy()
-display(dungeon)
+    parser = argparse.ArgumentParser()
 
-run_game(dungeon, player_coordinates)
+    parser.add_argument(
+        '--level', '-l',
+        type=int,
+        default=0,
+        help="Input the level you want to start at (default=0)"
+    )
+
+    args = parser.parse_args()
+    print(args)
+
+    if args.level > 0:
+        LEVEL_NUM = args.level - 1
+
+    #dungeon, player_coordinates = create_dungeon_easy()
+    finish_level()
+    display(dungeon)
+    
+    run_game(dungeon, player_coordinates)
 
